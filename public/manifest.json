@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Tablication",
+  "description": "Have you ever wondered how many tabs you have opened or if there are tabs that are already opened somewhere? Tablication is a chrome extension that makes all this possible for you, showing everything for you that you may need.",
+  "version": "0.0.0",
+  "options_ui": {
+    "page": "options.html"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["js/vendor.js", "js/content-script.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "permissions": [],
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}
