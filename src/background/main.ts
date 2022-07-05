@@ -1,4 +1,4 @@
-import {TabInfo, TablicationData, WindowInfo} from './types';
+import {TabInfo, TablicationData, WindowInfo} from '../shared/types';
 
 import Tab = chrome.tabs.Tab;
 import Window = chrome.windows.Window;
