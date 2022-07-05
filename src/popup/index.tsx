@@ -1,13 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
+
+const styles = {
+  width: '400px',
+};
 
 const Popup = () => (
-  <h1>Welcome to Tablication Popup!</h1>
+  <h1 style={styles}>Welcome to Tablication Popup!</h1>
 );
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root') as Element);
+root.render(
   <React.StrictMode>
     <Popup />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );

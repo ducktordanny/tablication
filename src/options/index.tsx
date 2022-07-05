@@ -1,13 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
 
 const Options = () => (
   <h1>Welcome to Tablication Options!</h1>
 );
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root') as Element);
+root.render(
   <React.StrictMode>
     <Options />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
