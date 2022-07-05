@@ -12,13 +12,13 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/vendor.js", "js/content-script.js"]
+      "js": ["js/vendor.js", "js/content_script.js"]
     }
   ],
   "background": {
     "service_worker": "js/background.js"
   },
-  "permissions": [],
+  "permissions": ["tabs"],
   "host_permissions": [
     "<all_urls>"
   ]
