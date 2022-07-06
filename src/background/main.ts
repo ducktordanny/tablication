@@ -1,31 +1,14 @@
-import {TabInfo, TablicationData, WindowInfo} from '../shared/types';
+import {fetchAllTablicationData} from './utils/chrome-window-tab.utils';
+import {isMessageFromPopup} from './utils/checkers.util';
 
-import Tab = chrome.tabs.Tab;
-import Window = chrome.windows.Window;
+import {TablicationData} from '../shared/types';
 
 let tablicationData: TablicationData = [];
 
-async function fetchAllTablicationData(): Promise<TablicationData> {
-  const chromeWindows = await chrome.windows.getAll();
-  return mapChromeWindows(chromeWindows);
-}
-
-async function mapChromeWindows(windows: Array<Window>): Promise<TablicationData> {
-  const tablicationData = windows.map((window: Window) => {
-    const {id, focused} = window;
-    return {id, focused} as WindowInfo;
-  });
-  for (const window of tablicationData) window.tabs = await fetchChromeTabsOf(window.id);
-  return tablicationData;
-}
-
-async function fetchChromeTabsOf(windowId: number | undefined): Promise<Array<TabInfo>> {
-  const chromeTabs = await chrome.tabs.query({windowId});
-  return chromeTabs.map((chromeTab: Tab) => {
-    const {id, active, title, url, index} = chromeTab;
-    return {id, active, title, url, index} as TabInfo;
-  });
-}
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (!isMessageFromPopup(sender.url, sender.id)) return;
+  if (message.name === 'get-tablication-data') sendResponse(tablicationData);
+});
 
 fetchAllTablicationData()
   .then(response => {
