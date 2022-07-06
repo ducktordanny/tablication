@@ -10,11 +10,16 @@ export interface ViewSelectOption {
 export type ViewSelectOptions = Array<ViewSelectOption>;
 
 export interface ViewSelectProps {
+  label?: string;
   options: ViewSelectOptions;
   onSelect: (value: string) => void;
 }
 
-export default function ViewSelect({options, onSelect}: ViewSelectProps) {
+export default function ViewSelect({
+  label,
+  options,
+  onSelect,
+}: ViewSelectProps) {
   const [anchorElement, setAnchorElement] = useState<Element | null>(null);
   const open = Boolean(anchorElement);
 
@@ -40,7 +45,7 @@ export default function ViewSelect({options, onSelect}: ViewSelectProps) {
         aria-expanded={open ? 'true' : undefined}
         onClick={onMenuOpenerButton}
       >
-        Dashboard
+        {label || 'View'}
       </Button>
       <Menu
         id="basic-menu"
