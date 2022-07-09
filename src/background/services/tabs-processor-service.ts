@@ -1,6 +1,6 @@
-import {TabInfo, TablicationData} from '../../shared/types';
 import {fetchAllTablicationData} from '../utils/chrome-window-tab.utils';
-import {QuantityByWindows} from '../../shared/types/views.type';
+import {TabInfo, TablicationData} from '../../shared/types';
+import {QuantityByWindows, QuantityByWindowsList} from '../../shared/types/views.type';
 
 export class TabsProcessorService {
   private data: TablicationData = [];
@@ -39,23 +39,26 @@ export class TabsProcessorService {
     return this.countDuplicatesOf(tabs);
   }
 
-  public getNumberOfTabsByWindows(): QuantityByWindows | undefined {
-    return this.data?.reduce((previous, current) => {
-      const {id, tabs} = current || {};
-      if (!id || !tabs) return previous;
-      previous[id] = tabs.length;
-      return previous;
-    }, {} as QuantityByWindows);
+  public getNumberOfTabsByWindows(): QuantityByWindowsList | undefined {
+    const filteredData = this.data?.filter(window => window.id && window.tabs);
+    return filteredData?.map(window => {
+      const {id, tabs} = window;
+      return {
+        windowId: id,
+        number: tabs?.length,
+      } as QuantityByWindows;
+    });
   }
 
-  public getNumberOfDuplicatesByWindows(): QuantityByWindows | undefined {
-    this.data?.reduce((previous, current) => {
-      const {id, tabs} = current || {};
-      if (!id || !tabs) return previous;
-      previous[id] = this.countDuplicatesOf(tabs);
-      return previous;
-    }, {} as QuantityByWindows);
-    return {};
+  public getNumberOfDuplicatesByWindows(): QuantityByWindowsList | undefined {
+    const filteredData = this.data?.filter(window => window.id && window.tabs);
+    return filteredData?.map(window => {
+      const {id, tabs} = window;
+      return {
+        windowId: id,
+        number: this.countDuplicatesOf(tabs || []),
+      } as QuantityByWindows;
+    }).filter(quantity => quantity.number > 0);
   }
 
   private countDuplicatesOf(tabs: Array<TabInfo>): number {
