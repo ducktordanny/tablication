@@ -1,5 +1,5 @@
 import {TabsProcessorService} from './tabs-processor-service';
-import {SummaryView} from '../../shared/types/views.type';
+import {Duplicates, SummaryView} from '../../shared/types/views.type';
 
 export class ViewAdapterService {
   public static getSummaryView(tabsService: TabsProcessorService): SummaryView {
@@ -12,16 +12,11 @@ export class ViewAdapterService {
     } as SummaryView;
   }
 
-  // todo
-  public static getAllTabsView(tabsService: TabsProcessorService) {
-    return undefined;
+  public static getAllDuplicates(tabsService: TabsProcessorService): Duplicates {
+    return tabsService.getAllDuplicatesOfTabs();
   }
 
-  public static getTabsGroupedView(tabsService: TabsProcessorService) {
-    return undefined;
-  }
-
-  public static getWindowsView(tabsService: TabsProcessorService) {
-    return undefined;
+  public static getGroupedDuplicates() {
+    // ...
   }
 }

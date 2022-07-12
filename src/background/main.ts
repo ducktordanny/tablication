@@ -11,12 +11,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse(tabsProcessorService.getStoredState());
   else if (message.name === 'get-summary-view-data')
     sendResponse(ViewAdapterService.getSummaryView(tabsProcessorService));
-  else if (message.name === 'get-all-tabs-view-data')
-    sendResponse(ViewAdapterService.getAllTabsView(tabsProcessorService));
-  else if (message.name === 'get-tabs-grouped-view-data')
-    sendResponse(ViewAdapterService.getTabsGroupedView(tabsProcessorService));
-  else if (message.name === 'get-windows-view-data')
-    sendResponse(ViewAdapterService.getWindowsView(tabsProcessorService));
+  else if (message.name === 'get-all-duplicates-data')
+    sendResponse(ViewAdapterService.getAllDuplicates(tabsProcessorService));
+  else if (message.name === 'get-grouped-duplicates-data')
+    sendResponse('wip');
   else {
     const error = 'OnMessageError: Invalid message name!';
     console.error(error);

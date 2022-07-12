@@ -1,6 +1,12 @@
 import {fetchAllTablicationData} from '../utils/chrome-window-tab.utils';
 import {TabInfo, TablicationData} from '../../shared/types';
-import {QuantityByWindows, QuantityByWindowsList} from '../../shared/types/views.type';
+import {
+  TabGroup,
+  ExtendedTabInfo,
+  Duplicates,
+  QuantityByWindows,
+  QuantityByWindowsList,
+} from '../../shared/types/views.type';
 
 export class TabsProcessorService {
   private data: TablicationData = [];
@@ -26,13 +32,6 @@ export class TabsProcessorService {
     );
   }
 
-  public getAllTabs(): Array<TabInfo> | undefined {
-    return this.data?.reduce(
-      (previous, current) => previous.concat(current?.tabs || []),
-      [] as Array<TabInfo>,
-    );
-  }
-
   public getNumberOfAllDuplicates(): number | undefined {
     const tabs = this.getAllTabs();
     if (!tabs) return;
@@ -40,8 +39,10 @@ export class TabsProcessorService {
   }
 
   public getNumberOfTabsByWindows(): QuantityByWindowsList | undefined {
-    const filteredData = this.data?.filter(window => window.id && window.tabs);
-    return filteredData?.map(window => {
+    const filteredData = this.data?.filter(
+      (window) => window.id && window.tabs,
+    );
+    return filteredData?.map((window) => {
       const {id, tabs} = window;
       return {
         windowId: id,
@@ -51,14 +52,35 @@ export class TabsProcessorService {
   }
 
   public getNumberOfDuplicatesByWindows(): QuantityByWindowsList | undefined {
-    const filteredData = this.data?.filter(window => window.id && window.tabs);
-    return filteredData?.map(window => {
-      const {id, tabs} = window;
-      return {
-        windowId: id,
-        number: this.countDuplicatesOf(tabs || []),
-      } as QuantityByWindows;
-    }).filter(quantity => quantity.number > 0);
+    const filteredData = this.data?.filter(
+      (window) => window.id && window.tabs,
+    );
+    return filteredData
+      ?.map((window) => {
+        const {id, tabs} = window;
+        return {
+          windowId: id,
+          number: this.countDuplicatesOf(tabs || []),
+        } as QuantityByWindows;
+      })
+      .filter((quantity) => quantity.number > 0);
+  }
+
+  public getAllDuplicatesOfTabs(): Duplicates {
+    const extendedTabs = this.getExtendedTabs();
+    const tabUrls = extendedTabs.map((tab) => tab.url);
+    const openedUrls = [...new Set(tabUrls)]; // contains every url once
+    const result = openedUrls.map((url) =>
+      extendedTabs.filter((tab) => tab.url === url),
+    );
+    return result.filter((element) => element.length > 1);
+  }
+
+  private getAllTabs(): Array<TabInfo> | undefined {
+    return this.data?.reduce(
+      (previous, current) => previous.concat(current?.tabs || []),
+      [] as Array<TabInfo>,
+    );
   }
 
   private countDuplicatesOf(tabs: Array<TabInfo>): number {
@@ -71,5 +93,18 @@ export class TabsProcessorService {
 
     return Object.values(mapOfTabUrlsOpened).filter((number) => number > 1)
       .length;
+  }
+
+  private getExtendedTabs(): TabGroup {
+    if (!this.data) return [];
+    return this.data.reduce((previous, current) => {
+      const {id: windowId, tabs} = current || {};
+      if (!windowId || !tabs) return previous;
+      const extendedTabs = tabs.map(
+        (tab) => ({windowId, ...tab} as ExtendedTabInfo),
+      );
+      previous = previous.concat(extendedTabs);
+      return previous;
+    }, [] as TabGroup);
   }
 }
