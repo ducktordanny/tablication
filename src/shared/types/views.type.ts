@@ -1,6 +1,6 @@
 import {TabInfo} from './index';
 
-export type QuantityByWindows = {windowId: number; number: number};
+export type QuantityByWindows = {windowId?: number; number: number};
 export type QuantityByWindowsList = Array<QuantityByWindows>;
 
 export interface SummaryView {
